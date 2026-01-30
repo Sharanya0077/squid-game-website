@@ -1,0 +1,152 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* BACKGROUND */
+body {
+  height: 100vh;
+  background-image: url("./bg.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+
+/* DARK OVERLAY FOR READABILITY */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(0,0,0,0.85) 0%,
+      rgba(0,0,0,0.6) 35%,
+      rgba(0,0,0,0.25) 60%
+    );
+  z-index: 1;
+}
+
+
+
+/* LOGIN CARD */
+.login-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 380px;
+  padding: 40px;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  border-radius: 18px;
+  text-align: center;
+  z-index: 2;
+  box-shadow: 0 0 40px rgba(180,100,255,0.4);
+}
+
+/* SHAPES */
+.shapes {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.circle {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #ff0055;
+  border-radius: 50%;
+}
+
+.triangle {
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 14px solid #00ff99;
+}
+
+.square {
+  width: 14px;
+  height: 14px;
+  border: 2px solid white;
+}
+
+/* TITLE */
+.title {
+  font-weight: 200;
+  letter-spacing: 3px;
+  margin-bottom: 25px;
+}
+
+.purple {
+  color: #b56cff;
+}
+
+.white {
+  color: white;
+}
+
+/* FORM */
+form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  border: none;
+  background: #111;
+  color: white;
+  outline: none;
+}
+
+form input::placeholder {
+  color: #aaa;
+}
+
+form button {
+  width: 100%;
+  padding: 10px;
+  background: #ff0055;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+form button:hover {
+  background: #ff3366;
+}
+
+form a {
+  display: block;
+  margin-top: 14px;
+  font-size: 12px;
+  color: #bbb;
+  text-decoration: none;
+}
+
+form a:hover {
+  color: white;
+}
+.enter-btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background: #ff0055;
+  color: white;
+  text-align: center;
+  border-radius: 8px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.enter-btn:hover {
+  background: #ff3366;
+}

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glass Bridge – Choose Your Step</title>
+  <style>
+    /* Vibrant Squid Game–inspired palette */
+    :root {
+      --bg-dark: #05070f;
+      --panel: #0f172a;
+      --pink: #ff2f92;
+      --teal: #22f2c7;
+      --purple: #7c3aed;
+      --green: #3cff00;
+      --red: #ff3b3b;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: radial-gradient(circle at top, #1e293b, var(--bg-dark));
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .game {
+      width: min(960px, 94vw);
+      background: linear-gradient(180deg, #111827, var(--panel));
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 0 60px rgba(255,47,146,.25);
+    }
+
+    /* Banner */
+    .banner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .banner h1 {
+      margin: 0;
+      font-size: clamp(24px, 4vw, 36px);
+      font-weight: 900;
+      color: var(--pink);
+      letter-spacing: 1px;
+    }
+
+    .banner span {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .step-counter {
+      background: #020617;
+      border: 1px solid var(--purple);
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-weight: 700;
+      color: var(--teal);
+    }
+
+    /* Alert UI */
+    .alert {
+      display: none;
+      margin-bottom: 18px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .alert.show { display: block; }
+
+    .alert.safe {
+      background: rgba(60,255,0,.15);
+      border: 1px solid var(--green);
+      color: var(--green);
+    }
+
+    .alert.fail {
+      background: rgba(255,59,59,.15);
+      border: 1px solid var(--red);
+      color: var(--red);
+    }
+
+    /* Bridge */
+    .bridge {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 10px;
+      margin: 24px 0 30px;
+    }
+
+    .tile {
+      aspect-ratio: 1 / 1;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #334155, #1e293b);
+      border: 1px solid #475569;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      color: #cbd5f5;
+      box-shadow: inset 0 0 0 rgba(0,0,0,0);
+    }
+
+    .tile.safe {
+      background: linear-gradient(180deg, #3cff00, #1bb300);
+      color: #052e16;
+      box-shadow: 0 0 18px rgba(60,255,0,.6);
+    }
+
+    .tile.broken {
+      background: linear-gradient(180deg, #ff3b3b, #b91c1c);
+      color: #450a0a;
+      box-shadow: 0 0 18px rgba(255,59,59,.6);
+    }
+
+    /* Controls */
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .btn {
+      padding: 18px;
+      border-radius: 16px;
+      border: none;
+      font-size: 18px;
+      font-weight: 900;
+      cursor: pointer;
+      letter-spacing: .5px;
+      transition: transform .08s ease, box-shadow .2s ease;
+    }
+
+    .btn:active { transform: scale(.97); }
+
+    .btn.left {
+      background: linear-gradient(180deg, var(--teal), #06b6d4);
+      color: #042f2e;
+      box-shadow: 0 10px 30px rgba(34,242,199,.5);
+    }
+
+    .btn.right {
+      background: linear-gradient(180deg, var(--purple), #4c1d95);
+      color: #ede9fe;
+      box-shadow: 0 10px 30px rgba(124,58,237,.5);
+    }
+
+    .btn:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .footer {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .reset {
+      background: transparent;
+      border: 1px dashed var(--pink);
+      color: var(--pink);
+      padding: 8px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="game">
+    <div class="banner">
+      <div>
+        <h1>Choose Your Step</h1>
+        <span>Every step could be your last</span>
+      </div>
+      <div class="step-counter">Step <span id="step">1</span> / 12</div>
+    </div>
+
+    <div id="alert" class="alert"></div>
+
+    <div class="bridge" id="bridge"></div>
+
+    <div class="controls">
+      <button id="left" class="btn left">⬅ LEFT GLASS</button>
+      <button id="right" class="btn right">RIGHT GLASS ➡</button>
+    </div>
+
+    <div class="footer">
+      <span>Survive the bridge to win.</span>
+      <button class="reset" id="reset">Reset</button>
+    </div>
+  </div>
+
+  <script>
+    const STEPS = 12;
+    const bridge = document.getElementById('bridge');
+    const alertBox = document.getElementById('alert');
+    const stepEl = document.getElementById('step');
+    const leftBtn = document.getElementById('left');
+    const rightBtn = document.getElementById('right');
+    const resetBtn = document.getElementById('reset');
+
+    let index = 0;
+    let path = [];
+    let tiles = [];
+
+    function init() {
+      bridge.innerHTML = '';
+      tiles = [];
+      path = Array.from({ length: STEPS }, () => Math.random() < 0.5 ? 'L' : 'R');
+      index = 0;
+      stepEl.textContent = index + 1;
+      showAlert('Make your choice.', '');
+      leftBtn.disabled = false;
+      rightBtn.disabled = false;
+
+      for (let i = 0; i < STEPS; i++) {
+        const t = document.createElement('div');
+        t.className = 'tile';
+        t.textContent = i + 1;
+        bridge.appendChild(t);
+        tiles.push(t);
+      }
+    }
+
+    function showAlert(msg, type) {
+      if (!msg) {
+        alertBox.className = 'alert';
+        return;
+      }
+      alertBox.textContent = msg;
+      alertBox.className = `alert show ${type}`;
+    }
+
+    function choose(side) {
+      if (index >= STEPS) return;
+      const correct = path[index] === side;
+
+      if (correct) {
+        tiles[index].classList.add('safe');
+        showAlert('Safe! Step forward.', 'safe');
+        index++;
+        stepEl.textContent = Math.min(index + 1, STEPS);
+
+        if (index === STEPS) {
+          showAlert('You crossed the bridge. You win.', 'safe');
+          leftBtn.disabled = rightBtn.disabled = true;
+        }
+      } else {
+        tiles[index].classList.add('broken');
+        showAlert('Glass shattered. Game over.', 'fail');
+        leftBtn.disabled = rightBtn.disabled = true;
+      }
+    }
+
+    leftBtn.onclick = () => choose('L');
+    rightBtn.onclick = () => choose('R');
+    resetBtn.onclick = init;
+
+    init();
+  </script>
+</body>
+</html>
