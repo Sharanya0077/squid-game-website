@@ -25,7 +25,3 @@ After logging in, the player enters the **Glass Bridge Game**.
 ### 🏆 Objective
 Reach the end of the glass bridge without falling to survive and win.
 
-## 🌐 Live Demo
-
-🔗 **Play the game here:**  
-https://Sharanya0077.github.io/squid-game-website/
